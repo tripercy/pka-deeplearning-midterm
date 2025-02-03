@@ -1,0 +1,79 @@
+from typing import Any, Generator, List, Tuple
+from model.layers.base_layer import BaseLayer
+import numpy as np
+
+from model.layers.input_layer import InputLayer
+from model.layers.loss_function import loss_func, loss_grad
+from model.optimizers.base_optimizer import BaseOptimizer
+
+
+class BaseModel:
+    def __init__(
+        self,
+        input_layer: InputLayer,
+        output_layer: BaseLayer,
+        batch_size: int,
+        optimizer: BaseOptimizer,
+        loss: loss_func,
+        loss_grad: loss_grad,
+    ) -> None:
+        layer = output_layer
+        layers: List[BaseLayer] = [layer]
+
+        while layer.prev_layer != None:
+            layer = layer.prev_layer
+            layers.append(layer)
+
+        self.layers: List[BaseLayer] = list(reversed(layers))
+
+        assert layer == input_layer
+        self.input_layer: InputLayer = input_layer
+        self.output_layer: BaseLayer = output_layer
+
+        self.batch_size = batch_size
+        self.optimizer = optimizer
+        self.loss_func = loss
+        self.loss_grad = loss_grad
+        self.history = []
+
+    def get_batches(
+        self, x: np.ndarray, y: np.ndarray
+    ) -> Generator[Tuple[np.ndarray, np.ndarray], Any, Any]:
+        N = x.shape[0]
+        for i in range(0, N, self.batch_size):
+            yield x[i : i + self.batch_size], y[i : i + self.batch_size]
+
+    def fit(self, x_train: np.ndarray, y_train: np.ndarray, epochs: int = 100) -> None:
+        assert x_train.shape[1] == self.input_layer.neurons
+
+        for i in range(epochs):
+            epoch_loss = 0
+            n_batches = np.ceil(x_train.shape[0] / self.batch_size)
+
+            for x, y in self.get_batches(x_train, y_train):
+                self.input_layer.feed_input(x)
+
+                # Forward pass
+                for layer in self.layers[1:]:
+                    layer.forward()
+
+                epoch_loss += self.loss_func(y, self.output_layer.output)
+                dA = self.loss_grad(y, self.output_layer.output)
+
+                # Back propagation
+                for layer in reversed(self.layers):
+                    dA = layer.backward(dA, self.optimizer)
+
+            epoch_loss /= n_batches
+            print(f"Epoch {i} -- Loss: {epoch_loss}")
+            self.history.append(epoch_loss)
+
+    def predict(self, x: np.ndarray) -> np.ndarray:
+        assert x.shape[1] == self.input_layer.neurons
+
+        self.input_layer.feed_input(x)
+        for layer in self.layers:
+            layer.forward()
+            # print(layer.output.shape)
+
+        return self.output_layer.output
