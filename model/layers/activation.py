@@ -92,6 +92,3 @@ def softmax_backward(z: np.ndarray, dA: np.ndarray) -> np.ndarray:
     y = softmax_forward(z)
     dL_dz = y * (dA - np.dot(dA, y))
     return dL_dz
-
-def test(f: activation_forward) -> None:
-    f(np.zeros((1, 1)))
