@@ -4,6 +4,7 @@ import numpy as np
 activation_forward: TypeAlias = Callable[[np.ndarray], np.ndarray]
 activation_backward: TypeAlias = Callable[[np.ndarray, np.ndarray], np.ndarray]
 
+
 def relu_forward(x: np.ndarray) -> np.ndarray:
     """
     Forward RELU function
@@ -15,6 +16,7 @@ def relu_forward(x: np.ndarray) -> np.ndarray:
     """
 
     return np.maximum(0, x)
+
 
 def relu_backward(z: np.ndarray, dA: np.ndarray) -> np.ndarray:
     """
@@ -34,6 +36,7 @@ def relu_backward(z: np.ndarray, dA: np.ndarray) -> np.ndarray:
 
     return dz
 
+
 def sigmoid_forward(x: np.ndarray) -> np.ndarray:
     """
     Forward Sigmoid function
@@ -44,7 +47,8 @@ def sigmoid_forward(x: np.ndarray) -> np.ndarray:
         np.ndarray: numpy array of the same shape as x
     """
 
-    return 1/(1 + np.exp(-x))
+    return 1 / (1 + np.exp(-x))
+
 
 def sigmoid_backward(z: np.ndarray, dA: np.ndarray) -> np.ndarray:
     """
@@ -75,7 +79,8 @@ def softmax_forward(x: np.ndarray) -> np.ndarray:
         np.ndarray: numpy array of the same shape as x
     """
 
-    return np.exp(x) / np.sum(np.exp(x), axis=0)
+    return np.exp(x) / np.sum(np.exp(x), axis=1, keepdims=True)
+
 
 def softmax_backward(z: np.ndarray, dA: np.ndarray) -> np.ndarray:
     """
@@ -90,5 +95,5 @@ def softmax_backward(z: np.ndarray, dA: np.ndarray) -> np.ndarray:
     assert z.shape == dA.shape
 
     y = softmax_forward(z)
-    dL_dz = y * (dA - np.dot(dA, y))
+    dL_dz = y * (dA - np.sum(dA * y, axis=1, keepdims=True))
     return dL_dz

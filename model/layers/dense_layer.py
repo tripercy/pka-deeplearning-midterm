@@ -44,6 +44,6 @@ class DenseLayer(BaseLayer):
         x = self.prev_layer.output
         dW = np.dot(x.T, dZ)
         self.weights = optimizer.update(self.weights, dW)
-        self.bias = optimizer.update(self.bias, dZ)
+        self.bias = optimizer.update(self.bias, np.sum(dZ, axis=0))
 
         return dX
