@@ -70,6 +70,7 @@ class BaseModel:
                 dA = self.loss_grad(y, self.output_layer.output)
 
                 # Back propagation
+                self.optimizer.tick()
                 for layer in reversed(self.layers):
                     dA = layer.backward(dA, self.optimizer)
 

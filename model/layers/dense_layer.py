@@ -23,6 +23,7 @@ class DenseLayer(BaseLayer):
         self.bias = np.random.random((1, neurons))
 
         self.z: np.ndarray
+        self.id = f"Dense{self.number}"
 
     @override
     def forward(self) -> None:
@@ -46,13 +47,14 @@ class DenseLayer(BaseLayer):
             dW = np.dot(x.T, dZ)
         else:  # (N, T, D)
             dW = np.einsum("ntd,ntD->dD", x, dZ)  # Sum over N and T
-        self.weights = optimizer.update(self.weights, dW)
+
+        self.weights = optimizer.update(self.weights, dW, self.id + "W")
 
         dB = np.sum(
             dZ, axis=(0, 1) if len(x.shape) == 3 else 0
         )  # Sum over N (and T if 3D)
 
-        self.bias = optimizer.update(self.bias, dB)
+        self.bias = optimizer.update(self.bias, dB, self.id + "B")
 
         return dX
 

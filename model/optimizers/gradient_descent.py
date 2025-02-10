@@ -9,5 +9,5 @@ class GradientDescentOpt(BaseOptimizer):
         self.learning_rate = learning_rate
 
     @override
-    def update(self, weights: np.ndarray, grads: np.ndarray) -> np.ndarray:
+    def update(self, weights: np.ndarray, grads: np.ndarray, id: str) -> np.ndarray:
         return weights - self.learning_rate * grads
