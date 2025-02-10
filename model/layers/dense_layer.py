@@ -42,9 +42,17 @@ class DenseLayer(BaseLayer):
         dX = np.dot(dZ, self.weights.T)
 
         x = self.prev_layer.output
-        dW = np.dot(x.T, dZ)
+        if len(x.shape) == 2:  # (N, D)
+            dW = np.dot(x.T, dZ)
+        else:  # (N, T, D)
+            dW = np.einsum("ntd,ntD->dD", x, dZ)  # Sum over N and T
         self.weights = optimizer.update(self.weights, dW)
-        self.bias = optimizer.update(self.bias, np.sum(dZ, axis=0))
+
+        dB = np.sum(
+            dZ, axis=(0, 1) if len(x.shape) == 3 else 0
+        )  # Sum over N (and T if 3D)
+
+        self.bias = optimizer.update(self.bias, dB)
 
         return dX
 

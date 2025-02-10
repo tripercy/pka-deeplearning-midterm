@@ -17,5 +17,5 @@ class InputLayer(BaseLayer):
         Returns:
             None
         """
-        assert data.shape[1] == self.neurons
+        assert data.shape[-1] == self.neurons
         self.output = data

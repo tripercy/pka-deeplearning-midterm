@@ -61,7 +61,7 @@ def sigmoid_backward(z: np.ndarray, dA: np.ndarray) -> np.ndarray:
         np.ndarray: numpy array of the same shape as z
     """
 
-    assert z.shape == dA.shape
+    assert z.shape == dA.shape, f"Shape mismatched: z: {z.shape} and dA: {dA.shape}"
 
     s = sigmoid_forward(z)
     dz = dA * s * (1 - s)

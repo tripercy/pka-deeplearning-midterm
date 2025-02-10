@@ -50,7 +50,7 @@ class BaseModel:
             layer.reset()
 
     def fit(self, x_train: np.ndarray, y_train: np.ndarray, epochs: int = 100) -> None:
-        assert x_train.shape[1] == self.input_layer.neurons
+        assert x_train.shape[-1] == self.input_layer.neurons
         self.reset()
 
         for i in range(epochs):
