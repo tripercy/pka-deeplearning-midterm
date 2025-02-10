@@ -59,9 +59,7 @@ class BaseModel:
 
             print(f"Epoch {i + 1}/{epochs}")
             # for x, y in self.get_batches(x_train, y_train):
-            for x, y in tqdm.tqdm(
-                self.get_batches(x_train, y_train), total=n_batches, disable=True
-            ):
+            for x, y in tqdm.tqdm(self.get_batches(x_train, y_train), total=n_batches):
                 self.input_layer.feed_input(x)
 
                 # Forward pass
@@ -76,7 +74,7 @@ class BaseModel:
                     dA = layer.backward(dA, self.optimizer)
 
             epoch_loss /= n_batches
-            print(f"Epoch {i + 1} -- Loss: {epoch_loss}")
+            print(f"Loss: {epoch_loss}")
             self.history.append(epoch_loss)
 
     def predict(self, x: np.ndarray) -> np.ndarray:
