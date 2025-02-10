@@ -1,10 +1,13 @@
 from typing import Any, Generator, List, Tuple
+
+from nltk import recall
 from model.layers.base_layer import BaseLayer
 import numpy as np
 import tqdm
 
 from model.layers.input_layer import InputLayer
 from model.layers.loss_function import loss_func, loss_grad
+from model.metrics import accuracy, precision
 from model.optimizers.base_optimizer import BaseOptimizer
 
 
@@ -79,7 +82,7 @@ class BaseModel:
             self.history.append(epoch_loss)
 
     def predict(self, x: np.ndarray) -> np.ndarray:
-        assert x.shape[1] == self.input_layer.neurons
+        assert x.shape[-1] == self.input_layer.neurons
 
         self.input_layer.feed_input(x)
         for layer in self.layers:
@@ -87,3 +90,12 @@ class BaseModel:
             # print(layer.output.shape)
 
         return self.output_layer.output
+
+    def evaluate(self, x_test, y_test):
+        y_pred = self.predict(x_test)
+
+        return (
+            accuracy(y_test, y_pred),
+            precision(y_test, y_pred),
+            recall(y_test, y_pred),
+        )
