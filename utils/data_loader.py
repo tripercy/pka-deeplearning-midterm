@@ -1,10 +1,10 @@
-from typing import Tuple
+from typing import Any, Tuple
 import pandas as pd
 import numpy as np
-from pandas.core.dtypes.missing import ArrayLike
+from numpy.typing import ArrayLike
 
 
-def read_imdb(path: str) -> Tuple[ArrayLike, ArrayLike, pd.Index]:
+def read_imdb(path: str) -> Tuple[ArrayLike | Any, ArrayLike, pd.Index]:
     """
     Load the IMDb gener classification dataset, shoule have been downloaded from
     "https://www.kaggle.com/code/soundslikedata/genre-classification-notebook"
