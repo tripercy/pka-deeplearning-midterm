@@ -7,5 +7,5 @@ fi
 
 if [ ! -d genre-classification-imdb ]; then
     unzip genre-classification-dataset-imdb.zip 
-    mv "Genre Classification Dataset" genere-classification-imdb
+    mv "Genre Classification Dataset" genre-classification-imdb
 fi

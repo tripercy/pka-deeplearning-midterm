@@ -1,13 +1,12 @@
 from typing import Any, Generator, List, Tuple
 
-from nltk import recall
 from model.layers.base_layer import BaseLayer
 import numpy as np
 import tqdm
 
 from model.layers.input_layer import InputLayer
 from model.layers.loss_function import loss_func, loss_grad
-from model.metrics import accuracy, precision
+from model.metrics import accuracy, precision, recall
 from model.optimizers.base_optimizer import BaseOptimizer
 
 
