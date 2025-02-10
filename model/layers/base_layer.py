@@ -18,3 +18,6 @@ class BaseLayer:
         pass
 
         return np.zeros((0))
+
+    def reset(self) -> None:
+        pass

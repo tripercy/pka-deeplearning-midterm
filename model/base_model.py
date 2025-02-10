@@ -1,6 +1,7 @@
 from typing import Any, Generator, List, Tuple
 from model.layers.base_layer import BaseLayer
 import numpy as np
+import tqdm
 
 from model.layers.input_layer import InputLayer
 from model.layers.loss_function import loss_func, loss_grad
@@ -43,14 +44,24 @@ class BaseModel:
         for i in range(0, N, self.batch_size):
             yield x[i : i + self.batch_size], y[i : i + self.batch_size]
 
+    def reset(self) -> None:
+        self.history = []
+        for layer in self.layers:
+            layer.reset()
+
     def fit(self, x_train: np.ndarray, y_train: np.ndarray, epochs: int = 100) -> None:
         assert x_train.shape[1] == self.input_layer.neurons
+        self.reset()
 
         for i in range(epochs):
             epoch_loss = 0
             n_batches = np.ceil(x_train.shape[0] / self.batch_size)
 
-            for x, y in self.get_batches(x_train, y_train):
+            print(f"Epoch {i + 1}/{epochs}")
+            # for x, y in self.get_batches(x_train, y_train):
+            for x, y in tqdm.tqdm(
+                self.get_batches(x_train, y_train), total=n_batches, disable=True
+            ):
                 self.input_layer.feed_input(x)
 
                 # Forward pass
@@ -65,7 +76,7 @@ class BaseModel:
                     dA = layer.backward(dA, self.optimizer)
 
             epoch_loss /= n_batches
-            print(f"Epoch {i} -- Loss: {epoch_loss}")
+            print(f"Epoch {i + 1} -- Loss: {epoch_loss}")
             self.history.append(epoch_loss)
 
     def predict(self, x: np.ndarray) -> np.ndarray:

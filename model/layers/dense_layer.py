@@ -47,3 +47,10 @@ class DenseLayer(BaseLayer):
         self.bias = optimizer.update(self.bias, np.sum(dZ, axis=0))
 
         return dX
+
+    @override
+    def reset(self) -> None:
+        assert self.prev_layer != None
+
+        self.weights = np.random.random((self.prev_layer.neurons, self.neurons))
+        self.bias = np.random.random((1, self.neurons))
