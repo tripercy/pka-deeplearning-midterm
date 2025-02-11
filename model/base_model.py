@@ -91,6 +91,18 @@ class BaseModel:
         return self.output_layer.output
 
     def evaluate(self, x_test, y_test):
+        """
+        Evaluate the model on 3 metrics: accuracy, precision and recall
+
+        Args:
+            x_test (ndarray)
+            y_test (ndarray)
+
+        Returns:
+            (double) accuracy
+            (ndarray) precision
+            (ndarray) recall
+        """
         y_pred = self.predict(x_test)
 
         return (
