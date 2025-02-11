@@ -7,7 +7,7 @@ from nltk.stem import PorterStemmer
 stemmer = PorterStemmer()
 
 
-def preprocess_sequence(sequence) -> List[str]:
+def preprocess_sequence(sequence: str) -> List[str]:
     """
     Preprocesses a text sequence:
     - Tokenizes
@@ -15,7 +15,6 @@ def preprocess_sequence(sequence) -> List[str]:
 
     Args:
         sequence (str): Input text sequence
-        max_len (int): Maximum sequence length
 
     Returns:
         np.ndarray: Preprocessed sequence of shape (max_len, embedding_dim)
