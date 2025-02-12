@@ -22,7 +22,7 @@ class TransformerEncoderBlock(BaseLayer):
 
         self.res2 = ResidualLayer(self.norm1)
         ff1 = DenseLayer(self.res2, neurons, relu_forward, relu_backward)
-        ff2 = DenseLayer(ff1, neurons, sigmoid_forward, sigmoid_backward)
+        ff2 = DenseLayer(ff1, neurons, relu_forward, relu_backward)
         self.res2.add_skipped_layers(ff2)
         self.norm2 = LayerNormLayer(self.res2)
 
